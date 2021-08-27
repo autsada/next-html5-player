@@ -1,0 +1,113 @@
+html {
+  font-size: 10px;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  padding: 0;
+  margin: 0;
+  background-color: white;
+  color: hsl(0, 0%, 30%);
+  font-family: system-ui, -apple-system,
+    /* Firefox supports this but not yet `system-ui` */ BlinkMacSystemFont,
+    'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji',
+    'Segoe UI Emoji';
+}
+
+h1,
+h2,
+h3,
+h4,
+p,
+span,
+ul,
+ol,
+li,
+a {
+  margin: 0;
+  padding: 0;
+}
+
+h1,
+h2 {
+  letter-spacing: 1px;
+  font-weight: 500;
+}
+
+p {
+  line-height: 1.5;
+}
+
+ol,
+ul,
+li {
+  list-style: none;
+}
+
+a,
+a:link,
+a:visited,
+a:focus,
+a:hover {
+  text-decoration: none;
+  font-family: inherit;
+  border: none;
+}
+
+img,
+svg,
+video,
+canvas,
+audio,
+iframe,
+embed,
+object {
+  display: block;
+}
+
+img,
+video {
+  max-width: 100%;
+  height: auto;
+}
+
+button {
+  border: none;
+  outline: none;
+  user-select: none;
+  text-align: center;
+  box-sizing: border-box;
+  cursor: pointer;
+  color: inherit;
+  text-transform: uppercase;
+}
+
+button:focus {
+  outline: none;
+}
+
+*:focus,
+*:active {
+  -webkit-tap-highlight-color: transparent;
+  outline: none;
+  -ms-touch-action: manipulation;
+  touch-action: manipulation;
+}
+
+progress {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+}
+
+/* progress::-webkit-progress-bar {
+  margin: 0;
+  padding: 0;
+  background-color: transparent;
+  background-color: grey;
+} */
