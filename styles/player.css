@@ -1,7 +1,154 @@
 /* General */
+/* Display none */
 .hidden {
   display: none;
 }
+
+/* Opacity 0 */
+.hide {
+  opacity: 0;
+}
+
+.hide-animate {
+  animation: animate-hide 0.5s forwards;
+  -webkit-animation: animate-hide 0.5s forwards;
+  -moz-animation: animate-hide 0.5s forwards;
+}
+
+@keyframes animate-hide {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+@-webkit-keyframes animate-hide {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+@-moz-keyframes animate-hide {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+/* Opacity 1 */
+.unhide {
+  opacity: 1;
+}
+
+.unhide-animate {
+  animation: animate-unhide 0.5s forwards;
+  -webkit-animation: animate-unhide 0.5s forwards;
+  -moz-animation: animate-unhide 0.5s forwards;
+}
+
+@keyframes animate-unhide {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@-webkit-keyframes animate-unhide {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@-moz-keyframes animate-unhide {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Opacity show and animation */
+/* .show-opac {
+  opacity: 1;
+  animation: animate-show-opac 0.5s forwards;
+  -webkit-animation: animate-show-opac 0.5s forwards;
+  -moz-animation: animate-show-opac 0.5s forwards;
+}
+
+@keyframes animate-show-opac {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@-webkit-keyframes animate-show-opac {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@-moz-keyframes animate-show-opac {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+} */
+
+/* Opactity hide and animation */
+/* .hide-opac {
+  opacity: 0;
+  animation: animate-hide-opac 0.5s forwards;
+  -webkit-animation: animate-hide-opac 0.5s forwards;
+  -moz-animation: animate-hide-opac 0.5s forwards;
+}
+
+@keyframes animate-hide-opac {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+@-webkit-keyframes animate-hide-opac {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+@-moz-keyframes animate-hide-opac {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+} */
 
 input[type='range'] {
   -webkit-appearance: none;
@@ -80,8 +227,41 @@ input[type='range']::-moz-range-progress {
   left: 0;
 }
 
-/** Gradient Box **/
-.gradient-box {
+/** Big play button in the center **/
+.big-play-btn-container {
+  position: absolute;
+  z-index: 6;
+  top: 50%;
+  left: 50%;
+  opacity: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transform: translate(-50%, -50%);
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+}
+
+.big-play-btn {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background-color: rgb(0, 0, 0, 0.05);
+  color: white;
+  opacity: 1;
+}
+
+.big-btn-icon {
+  position: absolute;
+  z-index: 6;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+/** Video cover layer **/
+.video-box-cover {
   position: absolute;
   top: 0;
   left: 0;
@@ -94,7 +274,6 @@ input[type='range']::-moz-range-progress {
 /** Control box **/
 .control-box {
   position: absolute;
-  top: 0;
   left: 0;
   width: 100%;
   color: white;
@@ -123,7 +302,7 @@ input[type='range']::-moz-range-progress {
 }
 
 /** Control box - top **/
-.control-top {
+/* .control-top {
   left: auto;
   right: 0;
   width: 20%;
@@ -178,23 +357,22 @@ input[type='range']::-moz-range-progress {
 
 .icon-gear {
   font-weight: lighter;
-}
+} */
 
 /** Control box - middle **/
-.control-middle {
+/* .control-middle {
   z-index: 5;
   top: 50%;
   transform: translateY(-50%);
-  /* background-color: green; */
 }
 
 .big-play-btn {
-  /* width: 40px; */
-  /* border-radius: 50px; */
+  width: 40px;
+  border-radius: 50px;
   opacity: 1;
-  /* border: 1px solid rgba(255, 255, 255, 0.15); */
-  /* background-color: rgb(0, 0, 0, 0.1); */
-  /* background-color: green; */
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  background-color: rgb(0, 0, 0, 0.1);
+  background-color: green;
 }
 
 .big-play-icon {
@@ -203,27 +381,25 @@ input[type='range']::-moz-range-progress {
 
 .play-icon {
   margin-left: 5px;
-}
+} */
 
 /** Control box - bottom **/
 .control-bottom {
   z-index: 20;
-  top: auto;
   bottom: 0;
-  height: 35px;
+  height: 25px;
   padding: 0 5px;
   flex-direction: column;
   justify-content: flex-start;
-  /* background-color: green; */
 }
 
 .bottom-bar {
+  position: relative;
   width: 100%;
 }
 
-/* Video duration */
+/* Video timeing - duration */
 .video-timing {
-  position: relative;
   height: 5px;
   text-align: end;
 }
@@ -238,7 +414,6 @@ input[type='range']::-moz-range-progress {
 
 /* Progress Bar */
 .progress-bar-container {
-  position: relative;
   height: 2px;
   background-color: #acacac;
 }
@@ -318,6 +493,7 @@ input[type='range']::-moz-range-progress {
   font-size: 8px;
 }
 
+/* Bottom control */
 .bottom-control {
   margin-top: 2px;
   padding: 0 5px;
@@ -325,37 +501,144 @@ input[type='range']::-moz-range-progress {
   justify-content: space-between;
   align-items: center;
   height: 100%;
-  /* background-color: green; */
 }
 
-.bottom-control-left {
+.control-area {
   text-align: center;
   height: 100%;
   display: flex;
   justify-content: flex-start;
   align-items: center;
-  /* background-color: orange; */
+}
+
+.play-pause-btn {
+  padding-left: 0;
 }
 
 .volume-control {
+  height: 100%;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-left: 5px;
+  margin-left: 10px;
 }
 
-.volume-level {
+.volume-icon-btn {
+  position: relative;
+  width: 20px;
+}
+
+.volume-icon {
+  position: absolute;
+  left: 0;
+  padding: 0;
+  margin: 0;
+}
+
+.volume-level-wrapper {
+  position: relative;
   width: 50px;
-  height: 3px;
+  height: 2px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   background-color: #acacac;
 }
 
-.volume-level::-webkit-slider-runnable-track {
-  background-color: white;
+/* Volume progress */
+.volume-progress {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 50px;
+  height: 2px;
+  display: block;
+  cursor: pointer;
 }
 
+.volume-progress::-webkit-progress-bar {
+  background-color: transparent;
+  cursor: pointer;
+}
+
+.volume-progress::-webkit-progress-value {
+  background-color: #fff;
+}
+
+.volume-progress::-moz-progress-bar {
+  padding: 0;
+  margin: 0;
+  background-color: #fff;
+}
+
+.volume-level {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background-color: transparent;
+  margin: 0;
+  padding: 0;
+}
+
+/* Track */
+.volume-level::-moz-range-track {
+  height: 2px;
+}
+
+/* Thumb */
 .volume-level::-webkit-slider-thumb {
-  height: 8px;
-  width: 8px;
+  height: 6px;
+  width: 6px;
   background: #fff;
+}
+
+.volume-level::-moz-range-thumb {
+  height: 6px;
+  width: 6px;
+  background: #fff;
+}
+
+.volume-level::-ms-thumb {
+  height: 6px;
+  width: 6px;
+  background: #fff;
+}
+
+/* Progress - mozila */
+.volume-level::-moz-range-progress {
+  height: 2px;
+  background-color: #fff;
+}
+
+.fullscreen-btn {
+  padding-right: 0;
+}
+
+.auto-play-btn {
+  height: 10px;
+  justify-content: space-between;
+  margin-right: 5px;
+  padding: 0;
+  background-color: rgb(117, 117, 117);
+  border-radius: 10px;
+}
+
+.auto-play-btn .pause-icon {
+  background-color: rgb(82, 82, 82);
+  border-radius: 50%;
+  padding: 0 2px;
+  opacity: 1;
+  margin: 0;
+}
+
+.auto-play-btn .play-icon {
+  background-color: #fff;
+  color: #000;
+  border-radius: 50%;
+  padding: 0 1px;
+  padding-left: 2.5px;
+  opacity: 0;
+  margin: 0;
 }
