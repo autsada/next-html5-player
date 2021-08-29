@@ -2,12 +2,14 @@ import type { NextPage } from 'next'
 
 import styles from '../styles/Home.module.css'
 import Player from '../components/player'
-// import Player from '../components/cldPlayer'
+import { getUrls } from '../cloudinary/cld'
+
+const urls = getUrls('pilates/assets/customize')
 
 const Home: NextPage = () => {
   return (
     <div className={styles.container}>
-      <Player src='pilates/assets/customize' />
+      <Player src={urls} />
     </div>
   )
 }
