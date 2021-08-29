@@ -4,7 +4,6 @@ import React, {
   useState,
   MouseEvent,
   ChangeEvent,
-  TouchEvent,
 } from 'react'
 import ReactPlayer from 'react-player/lazy'
 import fscreen from 'fscreen'
@@ -22,9 +21,9 @@ import {
   RiSettings4Fill,
 } from 'react-icons/ri'
 import { CgInpicture } from 'react-icons/cg'
+import { ImLoop } from 'react-icons/im'
 
 import { formatTime } from '../utils'
-import { TouchEventHandler } from 'react'
 
 interface Props {
   src: string | string[]
@@ -45,10 +44,9 @@ const Player = ({ src, bigPlayIconColor, bigPlayIconBgColor }: Props) => {
   const seekBarRef = useRef<HTMLInputElement>(null)
   const bigBtnConRef = useRef<HTMLDivElement>(null)
   const bigBtnRef = useRef<HTMLButtonElement>(null)
-  // const seekBtnRef = createRef<HTMLDivElement>()
-  // const seekRef = useRef(0)
+  const controlBoxRef = useRef<HTMLDivElement>(null)
 
-  const [ready, setReady] = useState(false)
+  const [videoReady, setVideoReady] = useState(false)
   const [browserSupport, setBrowserSupport] = useState(true)
   // const [canPlay, setCanPlay] = useState(true)
   const [autoPlay, setAutoPlay] = useState(false)
@@ -68,7 +66,6 @@ const Player = ({ src, bigPlayIconColor, bigPlayIconBgColor }: Props) => {
   const [seek, setSeek] = useState(false)
   const [skipTo, setSkipTo] = useState<number | null>(null)
   const [skipToPos, setSkipToPos] = useState('')
-  // const [progressId, setProgressId] = useState<NodeJS.Timer | null>(null)
 
   // Check browser support
   useEffect(() => {
@@ -110,33 +107,34 @@ const Player = ({ src, bigPlayIconColor, bigPlayIconBgColor }: Props) => {
     }
   }, [])
 
-  // Show big play button when the video is not playing
-  useEffect(() => {
-    if (!playing && (playerState.played === 0 || playerState.played === 1)) {
-      const bigBtnCon = bigBtnConRef.current
-      const bigBtn = bigBtnRef.current
-      if (bigBtnCon && bigBtn) {
-        bigBtnCon.style.opacity = '1'
-        bigBtn.style.opacity = '1'
-      }
-    }
-  }, [playing, playerState.played])
-
   function onReady() {
-    setReady(true)
+    setVideoReady(true)
+  }
+
+  // When the user clicks/tabs on the video, show/hide the big play icon and the control box
+  function onVideoClick() {
+    const bigBtnCon = bigBtnConRef.current
+    const controlBox = controlBoxRef.current
+
+    if (bigBtnCon && controlBox) {
+      bigBtnCon.classList.toggle('hide')
+      bigBtnCon.classList.toggle('hide-animate')
+      bigBtnCon.classList.toggle('unhide')
+      bigBtnCon.classList.toggle('unhide-animate')
+      controlBox.classList.toggle('invisible')
+      controlBox.classList.toggle('invisible-animate')
+      controlBox.classList.toggle('visible')
+      controlBox.classList.toggle('visible-animate')
+    }
   }
 
   function togglePlay() {
     setPlaying(!playing)
 
+    // Animate the big play button
     const bigBtn = bigBtnRef.current
     if (bigBtn) {
-      if (playing) {
-        // Currently is playing and is going to pause
-        bigBtn.style.opacity = '1'
-      } else {
-        // Currently paused and is going to play
-        bigBtn.style.opacity = '0'
+      if (!playing) {
         bigBtn.animate(
           [
             {
@@ -224,13 +222,11 @@ const Player = ({ src, bigPlayIconColor, bigPlayIconBgColor }: Props) => {
     setVolume((prev) => (prev === 0 && muted ? 0.8 : prev))
   }
 
-  function handleVolumeChange(e: ChangeEvent<HTMLInputElement>) {
-    setVolume(parseFloat(e.target.value))
+  function handleVolumeChange(
+    e: ChangeEvent<HTMLInputElement> | MouseEvent<HTMLInputElement>
+  ) {
+    setVolume(parseFloat((e.target as HTMLInputElement).value))
   }
-
-  // function handleVolumeChangeTouch(e: TouchEvent<HTMLInputElement>) {
-  //   setVolume(parseFloat((e.target as HTMLInputElement).value))
-  // }
 
   function toggleFullscreen() {
     const videoEl = videoContainerRef.current
@@ -239,8 +235,10 @@ const Player = ({ src, bigPlayIconColor, bigPlayIconBgColor }: Props) => {
       if (fscreen.fullscreenEnabled) {
         if (fscreen.fullscreenElement === null) {
           fscreen.requestFullscreen(videoEl)
+          screen.orientation.lock('landscape-primary')
         } else {
           fscreen.exitFullscreen()
+          screen.orientation.lock('natural')
         }
       }
     }
@@ -258,6 +256,10 @@ const Player = ({ src, bigPlayIconColor, bigPlayIconBgColor }: Props) => {
     setPip(false)
   }
 
+  function toggleLoop() {
+    setLoop(!loop)
+  }
+
   // if (!canPlay) return <p>Sorry, something went wrong.</p>
 
   return (
@@ -265,7 +267,7 @@ const Player = ({ src, bigPlayIconColor, bigPlayIconBgColor }: Props) => {
       ref={videoContainerRef}
       id="player"
       className="player"
-      style={{ opacity: !ready ? '0' : '1' }}
+      style={{ opacity: !videoReady ? '0' : '1' }}
     >
       <ReactPlayer
         ref={videoRef}
@@ -288,65 +290,30 @@ const Player = ({ src, bigPlayIconColor, bigPlayIconBgColor }: Props) => {
         onDisablePIP={disablePip}
       />
 
-      {/* This div is placed on top of the video and canbe clicked to play/pause */}
-      <div className="video-box-cover" onClick={togglePlay}></div>
-
-      <div ref={bigBtnConRef} className="big-play-btn-container">
-        <button ref={bigBtnRef} className="big-play-btn">
+      <div
+        ref={bigBtnConRef}
+        className={`big-play-btn-container ${
+          playing ? 'hide hide-animate' : 'unhide unhide-animate'
+        }`}
+        onClick={onVideoClick}
+      >
+        <button ref={bigBtnRef} className="big-play-btn" onClick={togglePlay}>
           {playing ? (
-            <IoIosPause size="25px" className="big-btn-icon" />
-          ) : playerState.played < 1 ? (
-            <IoMdPlay
-              size="25px"
-              className="big-btn-icon"
-              style={{ marginLeft: '2px' }}
-            />
+            <IoIosPause className="big-btn-icon" />
+          ) : playerState.played < 0.95 ? (
+            <IoMdPlay className="big-btn-icon" style={{ marginLeft: '2px' }} />
           ) : (
-            <MdReplay size="25px" className="big-btn-icon" />
+            <MdReplay className="big-btn-icon" />
           )}
         </button>
       </div>
 
-      {/* <div className="control-box control-top">
-        <button
-          className="control-btn btn-auto-play"
-          onClick={toggleAutoPlay}
-          onTouchMove={toggleAutoPlay}
-        >
-          {!autoPlay ? (
-            <div className="icon-auto-play-wrapper pause">
-              <IoIosPause className="btn-icon icon-auto-play-pause" />
-            </div>
-          ) : (
-            <div className="icon-auto-play-wrapper play">
-              <GoPlay className="btn-icon icon-auto-play-play" />
-            </div>
-          )}
-        </button>
-        <button className="control-btn btn-gear">
-          <IoSettingsOutline className="btn-icon icon-gear" />
-        </button>
-      </div> */}
-      {/* <div className="control-box control-middle">
-        <button
-          ref={bigBtnRef}
-          className="control-btn big-play-btn"
-          style={{ backgroundColor: bigPlayIconBgColor }}
-        >
-          {playing ? (
-            <IoIosPause
-              className="btn-icon big-play-icon"
-              color={bigPlayIconColor}
-            />
-          ) : (
-            <IoMdPlay
-              className="btn-icon play-icon big-play-icon"
-              color={bigPlayIconColor}
-            />
-          )}
-        </button>
-      </div> */}
-      <div className="control-box control-bottom">
+      <div
+        ref={controlBoxRef}
+        className={`control-box bottom-control-box ${
+          playing ? 'invisible invisible-animate' : 'visible visible-animate'
+        }`}
+      >
         <div className="bottom-bar video-timing">
           <p className="video-duration">
             {formatTime(duration * playerState.played)} / {formatTime(duration)}
@@ -380,15 +347,16 @@ const Player = ({ src, bigPlayIconColor, bigPlayIconBgColor }: Props) => {
             </p>
           )}
         </div>
+
         <div className="bottom-bar bottom-control">
           <div className="control-area left-control">
             <button className="control-btn play-pause-btn" onClick={togglePlay}>
               {playing ? (
-                <IoIosPause className="btn-icon-small" />
+                <IoIosPause className="btn-icon" />
               ) : playerState.played === 1 ? (
-                <MdReplay className="btn-icon-small" />
+                <MdReplay className="btn-icon" />
               ) : (
-                <IoMdPlay className="btn-icon-small" />
+                <IoMdPlay className="btn-icon" />
               )}
             </button>
             <div className="volume-control">
@@ -397,12 +365,43 @@ const Player = ({ src, bigPlayIconColor, bigPlayIconBgColor }: Props) => {
                 onClick={toggleMuted}
               >
                 <IoVolumeMute
+                  className={`btn-icon volume-icon ${
+                    volume === 0 || muted
+                      ? 'unhide unhide-animate'
+                      : 'hide hide-animate'
+                  }`}
+                />
+
+                <IoVolumeLow
+                  className={`btn-icon volume-icon ${
+                    !muted && volume > 0 && volume <= 0.4
+                      ? 'unhide unhide-animate'
+                      : 'hide hide-animate'
+                  }`}
+                />
+
+                <IoVolumeMedium
+                  className={`btn-icon volume-icon ${
+                    !muted && volume > 0.4 && volume <= 0.8
+                      ? 'unhide unhide-animate'
+                      : 'hide hide-animate'
+                  }`}
+                />
+
+                <IoVolumeHigh
+                  className={`btn-icon volume-icon ${
+                    !muted && volume > 0.8 && volume <= 1
+                      ? 'unhide unhide-animate'
+                      : 'hide hide-animate'
+                  }`}
+                />
+
+                {/* <IoVolumeMute
                   className={`volume-icon ${
                     volume === 0 || muted
                       ? 'unhide unhide-animate'
                       : 'hide hide-animate'
                   }`}
-                  size="13px"
                 />
 
                 <IoVolumeLow
@@ -411,7 +410,6 @@ const Player = ({ src, bigPlayIconColor, bigPlayIconBgColor }: Props) => {
                       ? 'unhide unhide-animate'
                       : 'hide hide-animate'
                   }`}
-                  size="13px"
                 />
 
                 <IoVolumeMedium
@@ -420,7 +418,6 @@ const Player = ({ src, bigPlayIconColor, bigPlayIconBgColor }: Props) => {
                       ? 'unhide unhide-animate'
                       : 'hide hide-animate'
                   }`}
-                  size="13px"
                 />
 
                 <IoVolumeHigh
@@ -429,35 +426,6 @@ const Player = ({ src, bigPlayIconColor, bigPlayIconBgColor }: Props) => {
                       ? 'unhide unhide-animate'
                       : 'hide hide-animate'
                   }`}
-                  size="13px"
-                />
-
-                {/* <IoVolumeMute
-                  className={`volume-icon show-opac ${
-                    volume === 0 || muted ? '' : 'hide-opac'
-                  }`}
-                  size="13px"
-                />
-
-                <IoVolumeLow
-                  className={`volume-icon show-opac ${
-                    !muted && volume > 0 && volume <= 0.4 ? '' : 'hide-opac'
-                  }`}
-                  size="13px"
-                />
-
-                <IoVolumeMedium
-                  className={`volume-icon show-opac ${
-                    !muted && volume > 0.4 && volume <= 0.8 ? '' : 'hide-opac'
-                  }`}
-                  size="13px"
-                />
-
-                <IoVolumeHigh
-                  className={`volume-icon show-opac ${
-                    !muted && volume > 0.8 && volume <= 1 ? '' : 'hide-opac'
-                  }`}
-                  size="13px"
                 /> */}
               </button>
               <div className="volume-level-wrapper">
@@ -474,42 +442,56 @@ const Player = ({ src, bigPlayIconColor, bigPlayIconBgColor }: Props) => {
                   step="any"
                   value={muted ? 0 : volume}
                   onChange={handleVolumeChange}
-                  // onTouchMoveCapture={handleVolumeChangeTouch}
+                  onClick={handleVolumeChange}
                 />
               </div>
             </div>
           </div>
           <div className="control-area right-control">
+            <button className="control-btn loop-btn">
+              <ImLoop
+                className="btn-icon loop-icon"
+                color={loop ? 'red' : '#fff'}
+                onClick={toggleLoop}
+              />
+            </button>
             <button
               className="control-btn auto-play-btn"
               onClick={toggleAutoPlay}
               onTouchMove={toggleAutoPlay}
             >
               <IoIosPause
-                size="12px"
-                className="pause-icon"
+                className="btn-icon pause-icon"
                 style={{ opacity: autoPlay ? '0' : '1' }}
               />
               <IoMdPlay
-                size="12px"
-                className="play-icon"
+                className="btn-icon play-icon"
                 style={{ opacity: autoPlay ? '1' : '0' }}
               />
             </button>
-            <button className="control-btn">
-              <RiSettings4Fill />
+            <button className="control-btn settings-btn">
+              <RiSettings4Fill className="btn-icon settings-icon" />
             </button>
             {canPip && (
-              <button className="control-btn">
-                <CgInpicture size="18px" onClick={togglePip} />
+              <button className="control-btn pip-btn">
+                <CgInpicture
+                  className="btn-icon pip-icon"
+                  onClick={togglePip}
+                />
               </button>
             )}
             {canFullscreen && (
               <button className="control-btn fullscreen-btn">
                 {!fullscreen ? (
-                  <RiFullscreenLine onClick={toggleFullscreen} />
+                  <RiFullscreenLine
+                    className="btn-icon fullscreen-icon"
+                    onClick={toggleFullscreen}
+                  />
                 ) : (
-                  <RiFullscreenExitLine onClick={toggleFullscreen} />
+                  <RiFullscreenExitLine
+                    className="btn-icon fullscreen-icon"
+                    onClick={toggleFullscreen}
+                  />
                 )}
               </button>
             )}
